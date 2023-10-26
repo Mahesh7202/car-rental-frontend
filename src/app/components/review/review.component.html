@@ -1,0 +1,27 @@
+<div class="container mt-5">
+  <h2>Submit a Review</h2>
+  <form>
+    <div class="form-group">
+      <label for="displayname">Display Name</label>
+      <input class="form-control" type="text" id="displayname" (change)="getName(displayname.value)" #displayname>
+    </div>
+
+    <div class="form-group">
+      <label for="reviewContent">Write a Comment</label>
+      <textarea class="form-control" id="reviewContent" name="reviewContent" rows="3" [(ngModel)]="reviewContent" required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="rating">Rating</label>
+      <div class="rating">
+        <span class="star" [class.filled]="rating >= 5" (click)="rate(5)">&#9733;</span>
+        <span class="star" [class.filled]="rating >= 4" (click)="rate(4)">&#9733;</span>
+        <span class="star" [class.filled]="rating >= 3" (click)="rate(3)">&#9733;</span>
+        <span class="star" [class.filled]="rating >= 2" (click)="rate(2)">&#9733;</span>
+        <span class="star" [class.filled]="rating >= 1" (click)="rate(1)">&#9733;</span>
+      </div>
+      <input type="hidden" name="rating" [value]="rating">
+    </div>
+    <button type="submit" (click)="submitReview()" class="btn btn-primary">Submit Review</button>
+  </form>
+</div>

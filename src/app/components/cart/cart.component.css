@@ -1,0 +1,68 @@
+/* Progressbar - https://bbbootstrap.com/snippets/bootstrap-5-ecommerce-checkout-form-progress-bar-44177913 */
+
+.progresses {
+  position: relative;
+  max-width: 50%;
+  left: -15px;
+  margin: auto;
+}
+
+.progresses ul {
+  list-style: none;
+  padding: 0;
+}
+
+.progresses ul li {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  z-index: 200;
+  position: relative;
+}
+
+.progresses ul li.fill {
+  color: black;
+  background-color: var(--firstThemeColor);
+  background-image: url("/assets/images/white-success.png");
+  background-repeat: no-repeat;
+  background-size: 15px 15px;
+  background-position: center;
+}
+
+.progresses ul li::after {
+  position: absolute;
+  top: 35px;
+  left: -15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  width: 90px;
+}
+
+#step-1::after {
+  content: "Cart Summary";
+}
+
+#step-2::after {
+  content: "Upload Document";
+  left: -30px;
+}
+
+#step-3::after {
+  content: "Payment Information";
+  left: -30px;
+}
+
+#step-4::after {
+  content: "Order Conformation";
+  left: -20px;
+}
+
+.progresses .progress {
+  height: 0.5rem;
+  width: 100%;
+  top: 35px;
+  position: absolute;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+}

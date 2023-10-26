@@ -1,0 +1,11 @@
+<div *ngIf="brandsDataLoaded==false" class="spinner-border text-success" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+
+<div class="form-floating">
+  <select #brandList class="form-select" aria-label="Brand Name" (change)="routeTo(('/brand/' + brandList.value))">
+    <option value="" selected disabled hidden>Select Brand</option>
+    <option *ngFor="let brand of brands" [value]="brand.id">{{brand.name}}</option>
+  </select>
+  <label for="brandList">List of Brands</label>
+</div>

@@ -1,0 +1,15 @@
+.rating {
+  direction: rtl; /* Right to Left direction for stars */
+  unicode-bidi: bidi-override; /* Override Unicode Bi-directional Algorithm */
+  text-align: left; /* Align text content to the left */
+}
+
+.rating .star {
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.rating .star.filled {
+  color: #ffcc00; /* Filled star color */
+}

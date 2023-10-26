@@ -1,0 +1,134 @@
+<div
+  *ngIf="dataLoaded == false"
+  class="spinner-border text-success"
+  role="status"
+>
+  <span class="visually-hidden">Loading...</span>
+</div>
+
+<div class="cont" *ngIf="!rental">
+  <div class="card">
+    <div class="card-header text-center bg-dark bg-gradient text-light">
+      <h3>Booking List</h3>
+      ({{ rentItems.length }} Car Rented)
+    </div>
+    <div class="card-body table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Vehicle Image</th>
+            <th scope="col">Details</th>
+            <th scope="col">Leased Day</th>
+            <th scope="col">Daily Fee</th>
+            <th scope="col">Total Amount</th>
+            <th scope="col">DeliveryStatus</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rentItem of rentItems">
+            <td>
+              <img
+                [src]="getImagePath(rentItem.carimage[0].imagePath)"
+                height="80"
+                alt="..."
+                style="object-fit: cover"
+              />
+            </td>
+
+            <td>
+              {{ rentItem.rental.modelFullName }} <br />
+              <small class="text-muted">
+                {{ showDate(rentItem.rental.rentDate) }} -
+                {{ showDate(rentItem.rental.returnDate) }}
+              </small>
+            </td>
+
+            <td>
+              {{
+                getRentalPeriod(
+                  rentItem.rental.rentDate,
+                  rentItem.rental.returnDate
+                )
+              }}
+              Day
+            </td>
+
+            <td>${{ rentItem.cardetails.dailyPrice | currency : "" : "" }}</td>
+
+            <td>
+              <strong style="font-size: 16px">
+                ${{
+                  getRentalPeriod(
+                    rentItem.rental.rentDate,
+                    rentItem.rental.returnDate
+                  ) * rentItem.cardetails.dailyPrice | currency : "" : ""
+                }}
+              </strong>
+            </td>
+            <td>{{ rentItem.rental.deliveryStatus }}</td>
+
+            <td>
+              <button
+              (click)="deleteBooking(rentItem.rental)"
+              type="button"
+              style="margin-left: 5px"
+
+              class="btn btn-danger float-end px-3"
+              >
+                Delete
+              </button>
+              <button
+                (click)="showRentalDetails(rentItem.rental)"
+                type="button"
+                class="btn btn-success float-end px-3"
+              >
+                View Details
+              </button>
+
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="cont" *ngIf="rental">
+  <div class="card">
+    <div class="card-header text-center bg-dark bg-gradient text-light">
+      <div class="row">
+        <div class="col-1">
+          <button class="btn custom-button" (click)="goBack()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="white"
+              class="bi bi-arrow-left"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="col-11">
+          <h3>Booking Details</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <app-booking-details
+        [bookingDetails]="bookingDetails"
+      ></app-booking-details>
+    </div>
+  </div>
+</div>

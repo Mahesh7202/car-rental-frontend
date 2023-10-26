@@ -1,0 +1,272 @@
+<div class="container">
+  <ngx-spinner
+    bdColor="rgba(0, 0, 0, 0.8)"
+    size="medium"
+    color="#fff"
+    type="square-jelly-box"
+  >
+    <p style="color: rgb(255, 255, 255)">Checking Out...</p>
+  </ngx-spinner>
+  <div class="text-center">
+    <h1>Confirm Order</h1>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-8">
+      <div class="row table-responsive card ms-1">
+        <div class="card-header">
+          <span style="font-size: 20px; font-weight: bold">1. Cart</span>
+        </div>
+        <div class="card-body text-center">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th scope="col">Vehicle Image</th>
+                <th scope="col">Details</th>
+                <th scope="col">Leased Day</th>
+                <th scope="col">Daily Fee</th>
+                <th scope="col">Total Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let cartItem of confirmOrderInputModel.cartItems">
+                <td>
+                  <img
+                    [src]="getImagePath(cartItem.car.carImages[0].imagePath)"
+                    height="80"
+                    alt="..."
+                    style="object-fit: cover"
+                  />
+                </td>
+                <td>
+                  {{ cartItem.car.brandName }} {{ cartItem.car.modelName
+                  }}<br />
+                  <small class="text-muted">
+                    {{ showDate(cartItem.rentDate) }} -
+                    {{ showDate(cartItem.returnDate) }}
+                  </small>
+                </td>
+                <td>
+                  {{
+                    getRentalPeriod(cartItem.rentDate, cartItem.returnDate)
+                  }}
+                  Day
+                </td>
+                <td>${{ cartItem.car.dailyPrice | currency : "" : "" }}</td>
+                <td>
+                  <strong style="font-size: 16px">
+                    ${{
+                      getRentalPeriod(cartItem.rentDate, cartItem.returnDate) *
+                        cartItem.car.dailyPrice | currency : "" : ""
+                    }}
+                  </strong>
+                </td>
+              </tr>
+
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>Subtotal (Before Tax):</strong></td>
+                <td>
+                  <strong style="font-size: 20px">
+                    ${{
+                      calculateSubtotal(confirmOrderInputModel.cartItems)
+                        | currency : "" : ""
+                    }}
+                  </strong>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>Sales Tax (10%):</strong></td>
+                <td>
+                  <strong style="font-size: 16px">
+                    ${{
+                      calculateSalesTax(confirmOrderInputModel.cartItems)
+                        | currency : "" : ""
+                    }}
+                  </strong>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>Service Tax (5%):</strong></td>
+                <td>
+                  <strong style="font-size: 16px">
+                    ${{
+                      calculateServiceTax(confirmOrderInputModel.cartItems)
+                        | currency : "" : ""
+                    }}
+                  </strong>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>Total Amount:</strong></td>
+                <td>
+                  <strong style="font-size: 20px">
+                    ${{
+                      calculateTotalAmount(confirmOrderInputModel.cartItems)
+                        | currency : "" : ""
+                    }}
+                  </strong>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>VAT (7%):</strong></td>
+                <td>
+                  <strong style="font-size: 16px;">
+                    ${{ calculateVAT(confirmOrderInputModel.cartItems) | currency:"":"" }}
+                  </strong>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>Insurance Fee:</strong></td>
+                <td>
+                  <strong style="font-size: 16px;">
+                    ${{ calculateInsuranceFee() | currency:"":"" }}
+                  </strong>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>Total Amount:</strong></td>
+                <td>
+                  <strong style="font-size: 20px">
+                    ${{
+                      calculateTotalAmount(confirmOrderInputModel.cartItems)
+                        | currency : "" : ""
+                    }}
+                  </strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <div class="card-header">
+          <span style="font-size: 20px; font-weight: bold"
+            >2. Cart Summary</span
+          >
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item border border-light">
+              <small>
+                <span class="float-start">Total Reted Cars:</span>
+                <span class="float-end">
+                  <strong>
+                    {{ confirmOrderInputModel.cartItems.length }} car
+                  </strong>
+                </span>
+              </small>
+            </li>
+            <li class="list-group-item border border-light">
+              <small>
+                <span class="float-start">Total REntal Period: </span>
+                <span class="float-end">
+                  <strong>
+                    {{
+                      calculateTotalRentalPeriod(
+                        confirmOrderInputModel.cartItems
+                      )
+                    }}
+                    day
+                  </strong>
+                </span>
+              </small>
+            </li>
+            <li class="list-group-item border border-light">
+              <small>
+                <span class="float-start">Total Amount Payable : </span>
+              </small>
+              <span class="float-end text-danger">
+                <strong>
+                  ${{
+                    calculateTotalAmount(confirmOrderInputModel.cartItems)
+                      | currency : "" : ""
+                  }}
+                </strong>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-header">
+          <span style="font-size: 20px; font-weight: bold"
+            >3. Payment Information</span
+          >
+        </div>
+        <div class="card-body">
+          <div class="row mt-2">
+            <!--Credit Card-->
+            <div class="card-holder" style="--card-scale: 0.35">
+              <div class="credit-card-base">
+                <img
+                  class="credit-card-chip"
+                  src="/assets/images/credit-card-chip.png"
+                />
+                <span
+                  class="credit-card-emboss credit-card-number"
+                  style="margin-top: 80px"
+                >
+                  {{
+                    "**** **** **** " +
+                      confirmOrderInputModel.rentPaymentRequest.cardNumber.substr(
+                        12,
+                        4
+                      )
+                  }}
+                </span>
+                <span
+                  class="credit-card-emboss credit-card-holder-name"
+                  style="padding-top: 20px"
+                >
+                  {{
+                    confirmOrderInputModel.rentPaymentRequest.cardHolderFullName
+                  }}
+                </span>
+              </div>
+              <img
+                class="credit-card-logo"
+                style="margin-left: 225px; margin-top: -80px"
+                [src]="
+                  getCreditCardLogoSource(
+                    confirmOrderInputModel.rentPaymentRequest.cardNumber
+                  )
+                "
+              />
+            </div>
+            <!--Credit Card End-->
+
+            <div class="d-grid gap-2">
+              <button (click)="rent()" class="btn btn-success" type="button">
+                Complete Payment
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

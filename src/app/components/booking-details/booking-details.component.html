@@ -1,0 +1,62 @@
+<div class="container mt-5" *ngIf="bookingDetails">
+  <div class="row">
+      <!-- Left Column: Image and Car Details -->
+      <div class="col-md-6">
+          <div class="list-group">
+              <h1 class="list-group-item list-group-heading list-group-item-info">Booking Details</h1>
+              <img [src]="getImagePath(bookingDetails.carimage[0].imagePath)" class="img-fluid list-group-item list-group-item-action" alt="..."
+              style="max-width: 100%">
+              <h2 class="list-group-item list-group-heading list-group-item-info">Car Details</h2>
+
+              <ul class="list-group">
+                 <li class="list-group-item"><b>Car ID : </b> <span class="font-weight-normal">{{bookingDetails.rental.carId}}</span></li>
+
+                  <li class="list-group-item"><b>Brand : </b> <span class="font-weight-normal">{{bookingDetails.cardetails.brandName}}</span></li>
+                  <li class="list-group-item"><b>Model : </b> <span class="font-weight-normal">{{bookingDetails.cardetails.modelName}}</span></li>
+                  <li class="list-group-item"><b>Description : </b> <span class="font-weight-normal">{{bookingDetails.cardetails.description}}</span></li>
+                  <li class="list-group-item"><b>Daily Price : </b> <span class="font-weight-normal">{{bookingDetails.cardetails.dailyPrice}}</span></li>
+              </ul>
+          </div>
+      </div>
+
+      <!-- Right Column: Rental and Payment Details -->
+      <div class="col-md-6">
+          <div class="list-group">
+              <h2 class="list-group-item list-group-heading list-group-item-info">Rental & Payment Details</h2>
+              <ul class="list-group">
+                  <li class="list-group-item"><b>Booking ID : </b><span class="font-weight-normal">{{bookingDetails.rental.id}}</span></li>
+                  <li class="list-group-item"><b>Customer Name : </b> <span class="font-weight-normal">{{bookingDetails.rental.customerFullName}}</span></li>
+                  <li class="list-group-item"><b>Customer ID:</b> <span class="font-weight-normal">{{bookingDetails.rental.customerId}}</span></li>
+              </ul>
+              <h6 class="mt-3 list-group-item list-group-heading list-group-item-info">Rental Dates:</h6>
+              <ul class="list-group">
+                  <li class="list-group-item"><b>Start Date : </b><span class="font-weight-normal">{{bookingDetails.rental.rentDate}}</span></li>
+                  <li class="list-group-item"><b>End Date : </b> <span class="font-weight-normal">{{bookingDetails.rental.returnDate}}</span></li>
+              </ul>
+              <h6 class="mt-3 list-group-item list-group-heading list-group-item-info">Payment Details:</h6>
+              <ul class="list-group">
+                  <li class="list-group-item"><b>Payment ID : </b> <span class="font-weight-normal">{{bookingDetails.rental.paymentId}}</span></li>
+                  <li class="list-group-item"><b>Payment Date : </b> <span class="font-weight-normal">{{bookingDetails.rental.paymentDate}}</span></li>
+              </ul>
+              <h6 class="mt-3 list-group-item list-group-heading list-group-item-info">Payment Invoice:</h6>
+
+              <ul class="list-group">
+                  <li class="list-group-item"><b>Leased Day : </b> <span class="font-weight-normal">
+                    {{getRentalPeriod(bookingDetails.rental.rentDate,bookingDetails.rental.returnDate)}} Day
+                  </span></li>
+                  <li class="list-group-item"><b>Daily Fee	: </b> <span class="font-weight-normal">{{bookingDetails.cardetails.dailyPrice}}</span></li>
+                  <li class="list-group-item"><b>Total Amount	: </b> <span class="font-weight-normal">
+                    <strong style="font-size: 16px;">
+                      ${{
+                      getRentalPeriod(bookingDetails.rental.rentDate,bookingDetails.rental.returnDate)
+                       *bookingDetails.cardetails.dailyPrice
+                      | currency:"":""
+                      }}
+                  </strong>
+                  </span></li>
+                  <li class="list-group-item"><b>Delivery Status : </b> <span class="font-weight-normal">{{bookingDetails.rental.deliveryStatus}}</span></li>
+              </ul>
+          </div>
+      </div>
+  </div>
+</div>

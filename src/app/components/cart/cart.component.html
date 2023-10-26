@@ -1,0 +1,318 @@
+<div *ngIf="!confirmOrderOutputModel">
+  <!--Empty Cart Div-->
+  <div *ngIf="cartItems.length === 0" class="text-center mt-5 mb-5">
+    <h3>Your Cart is Empty.</h3>
+    <br />
+    <button
+      routerLink=""
+      class="btn text-center mb-5"
+      type="button"
+      style="
+        background-color: var(--firstThemeColor);
+        color: var(--secondThemeColor);
+        border: 2px solid var(--secondThemeColor);
+      "
+    >
+      <strong>Start Renting a Car</strong>
+    </button>
+  </div>
+  <!--Empty Cart Div End-->
+
+  <!--Non Empty Cart Div-->
+  <div *ngIf="cartItems.length > 0">
+    <!--Checkout ProgressBar-->
+    <div class="progresses py-4 mb-4">
+      <ul class="d-flex align-items-center justify-content-between">
+        <li (click)="goCheckOutStep(0)" id="step-1" class="fill"></li>
+
+        <li (click)="checkOutStep === 1 ? goCheckOutStep(0) : null" id="step-2"
+         [class]="checkOutStep >= 1 ? 'fill text-nowrap' : 'text-nowrap'"
+        ></li>
+
+        <li
+          (click)="checkOutStep === 3 ? goCheckOutStep(1) : null"
+          id="step-3"
+          [class]="checkOutStep >= 2 ? 'fill text-nowrap' : 'text-nowrap'"
+        ></li>
+
+        <li
+          id="step-4"
+          [class]="checkOutStep === 3 ? 'fill text-nowrap' : 'text-nowrap'"
+        ></li>
+
+      </ul>
+      <div class="progress">
+        <div
+          class="progress-bar"
+          role="progressbar"
+          [style.width]="checkOutStep * 33.33 + '%'"
+          style="background-color: var(--firstThemeColor)"
+          aria-valuenow="25"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        ></div>
+      </div>
+    </div>
+    <!--Checkout ProgressBar End-->
+
+    <!--If Payment is Not Completed-->
+    <div *ngIf="!paymentOutputModel" class="row container">
+      <!--Payment-->
+      <div
+        *ngIf="checkOutStep === 2"
+        class="card p-4"
+        style="background-color: rgb(253, 253, 253)"
+      >
+        <div>
+          <button (click)="goCheckOutStep(1)" class="btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="black"
+              class="bi bi-arrow-left"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="row mb-4">
+          <app-payment
+            [cartItems]="cartItems"
+            (paymentOutputModel)="setPaymentOutputModel($event)"
+          >
+          </app-payment>
+        </div>
+      </div>
+      <!--Payment End-->
+
+      <!--Cart-->
+      <div *ngIf="checkOutStep === 0" class="col-md-8 card">
+        <div class="mt-4 mb-4">
+          <div *ngFor="let cartItem of cartItems" class="container">
+            <div style="display: flex; flex: 1 1 auto">
+              <div
+                routerLink="/car-details/{{ cartItem.car.id }}"
+                class="d-flex align-items-center"
+              >
+                <img
+                  class=""
+                  [src]="getImagePath(cartItem.car.carImages[0].imagePath)"
+                  height="80"
+                  alt="..."
+                  style="object-fit: cover"
+                />
+              </div>
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-md-8">
+                    <h6 class="card-title">
+                      {{ cartItem.car.brandName }} {{ cartItem.car.modelName }}
+                    </h6>
+
+                    <div class="row">
+                      <p class="card-text">
+                        <small class="text-muted"
+                          >Lease Period: {{ showDate(cartItem.rentDate) }} -
+                          {{ showDate(cartItem.returnDate) }}
+                          ({{
+                            getRentalPeriod(
+                              cartItem.rentDate,
+                              cartItem.returnDate
+                            )
+                          }}
+                          day)<br
+                        /></small>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div
+                      class="row d-flex justify-content-end align-items-center"
+                    >
+                      <div class="col-md-7">
+                        <p class="card-text text-danger text-nowrap">
+                          <strong>
+                            ${{
+                              cartItem.car.dailyPrice *
+                                getRentalPeriod(
+                                  cartItem.rentDate,
+                                  cartItem.returnDate
+                                ) | currency : "" : ""
+                            }}
+                          </strong>
+                        </p>
+                      </div>
+                      <div class="col-md-5">
+                        <div class="text-end">
+                          <button
+                            type="button"
+                            (click)="removeFromCart(cartItem.car)"
+                            class="btn btn-danger"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              fill="white"
+                              class="bi bi-trash-fill"
+                              viewBox="0 0 16 16"
+                              style="cursor: pointer"
+                            >
+                              <path
+                                d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="dropdown-divider" />
+          </div>
+        </div>
+      </div>
+      <!--Cart End-->
+
+      <!--Order Summary-->
+      <div *ngIf="checkOutStep === 0" class="col-md-4">
+        <div *ngIf="cartItems.length !== 0" class="card">
+          <div class="card-body">
+            <h5 class="card-title">Order Summary</h5>
+            <p class="card-text"></p>
+            <ul class="list-group">
+              <li class="list-group-item border border-light">
+                <small>
+                  <span class="float-start"
+                    >Total Number of Rented Vehicles:</span
+                  >
+                  <span class="float-end"
+                    ><strong>{{ cartItems.length }} car</strong></span
+                  >
+                </small>
+              </li>
+              <li class="list-group-item border border-light">
+                <small>
+                  <span class="float-start">Total Rental Period: </span>
+                  <span class="float-end">
+                    <strong> {{ calculateTotalRentalPeriod() }} day </strong>
+                  </span>
+                </small>
+              </li>
+              <li class="list-group-item border border-light">
+                <small>
+                  <span class="float-start">Amount Payable: </span>
+                </small>
+                <span class="float-end text-danger">
+                  <strong
+                    >${{ calculateTotalAmount() | currency : "" : "" }}</strong
+                  >
+                </span>
+              </li>
+              <li
+                *ngIf="checkOutStep === 0"
+                class="list-group border border-light"
+              >
+                <br />
+                <span class="d-flex flex-column float-end">
+                  <a (click)="confirmCart()" class="btn btn-success"
+                    >Confirm Cart</a
+                  >
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!--Order Summary End-->
+
+      <!--If Document Upload is Completed-->
+      <div *ngIf="checkOutStep === 1" class="container">
+        <div class="card p-4" style="background-color: rgb(253, 253, 253)">
+          <!--Back Button-->
+          <div>
+            <button (click)="goCheckOutStep(0)" class="btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="black"
+                class="bi bi-arrow-left"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+                />
+              </svg>
+            </button>
+          </div>
+          <!--Back Button End-->
+          <app-document-upload>
+
+          </app-document-upload>
+          <a (click)="confirmUpload()" class="btn btn-success"
+            >Confirm Upload</a
+          >
+
+
+          <!-- <app-confirm-order [confirmOrderInputModel]="createConfirmOrderInputModel()"
+                  (confirmOrderOutputModel)="setConfirmOrderOutputModel($event)"></app-confirm-order> -->
+        </div>
+      </div>
+      <!--If Document Upload is Completed End-->
+    </div>
+    <!--If Payment is Not Completed End-->
+
+    <!--If Payment is Completed-->
+    <div *ngIf="paymentOutputModel" class="container">
+      <div class="card p-4" style="background-color: rgb(253, 253, 253)">
+        <!--Back Button-->
+        <div>
+          <button (click)="goCheckOutStep(2)" class="btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="black"
+              class="bi bi-arrow-left"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+              />
+            </svg>
+          </button>
+        </div>
+        <!--Back Button End-->
+
+        <app-confirm-order
+          [confirmOrderInputModel]="createConfirmOrderInputModel()"
+          (confirmOrderOutputModel)="setConfirmOrderOutputModel($event)"
+          (bookingData)="setBookingData($event)"
+
+          ></app-confirm-order>
+      </div>
+    </div>
+    <!--If Payment is Completed End-->
+  </div>
+  <!--Non Empty Cart Div End-->
+</div>
+
+<!--Payment Successful Div-->
+<div *ngIf="confirmOrderOutputModel" class="container">
+  <app-payment-successful
+    [confirmOrderOutputModel]="confirmOrderOutputModel"
+    [bookingData]="bookingData"
+  ></app-payment-successful>
+</div>
+<!--Payment Successful Div End-->

@@ -1,0 +1,11 @@
+<div *ngIf="colorsDataLoaded==false" class="spinner-border text-success" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+
+<div class="form-floating">
+  <select #colorList class="form-select" aria-label="Renk adı" (change)="routeTo(('/color/' + colorList.value))">
+    <option value="" selected disabled hidden>Select Color</option>
+    <option *ngFor="let color of colors" [value]="color.id">{{color.name}}</option>
+  </select>
+  <label for="colorList">Filter Color </label>
+</div>

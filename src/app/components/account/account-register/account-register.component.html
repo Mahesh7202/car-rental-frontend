@@ -1,0 +1,50 @@
+<body class="text-center account-page">
+    <main class="form-account account-card">
+        <div class="card-body">
+            <div class="logo" style="font-size: 40px;"><span>Rental</span><span><span>Car</span></span></div>
+            <hr class="solid">
+            <form [formGroup]="registerForm" class="mt-4">
+                <div class="form-floating mb-2">
+                    <input formControlName="firstName" type="text" class="form-control" id="signupfirstname"
+                        placeholder="First Name">
+                    <label for="signupfirstname">First Name</label>
+                </div>
+                <div class="form-floating mb-2">
+                    <input formControlName="lastName" type="text" class="form-control" id="signuplastname"
+                        placeholder="Last Name">
+                    <label for="signuplastname">Last Name</label>
+                </div>
+                <div class="form-floating mb-2">
+                    <input formControlName="email" type="email" class="form-control" id="signupemail"
+                        placeholder="name@example.com">
+                    <label for="signupemail">E-mail Address</label>
+                </div>
+                <div class="form-floating mb-2">
+                    <input formControlName="password" type="password" class="form-control" id="signuppassword"
+                        placeholder="Password">
+                    <label for="signuppassword">Password</label>
+                </div>
+                <div class="form-floating mb-2">
+                    <input formControlName="confirmPassword" type="password" class="form-control"
+                        id="signupconfirmpassword" placeholder="Re-enter Password">
+                    <label for="signupconfirmpassword">Confirm Password</label>
+                </div>
+
+                <div class="checkbox mb-3 mt-3 text-light">
+                    <label>
+                        <input type="checkbox" value="remember-me" [(ngModel)]="rememberMe"
+                            [ngModelOptions]="{standalone: true}"> Remember Me
+                    </label>
+                </div>
+                <button (click)="register()" class="w-100 btn btn-lg"
+                    style="background-color: var(--firstThemeColor); color: var(--secondThemeColor);"
+                    type="submit"><strong>Register</strong></button>
+
+                <div class="text-light mt-3" style="font-size:14px">
+                    Already have an Account? <a routerLink="/account/login"
+                        style="color: var(--firstThemeColor);">LogIn Now!</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>

@@ -1,0 +1,333 @@
+<div *ngIf="carDataLoaded == false" class="spinner-border text-success" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+
+<!-- Modal -->
+<div *ngIf="carDataLoaded" class="modal fade" data-bs-backdrop="static" id="araciSepeteEkle" tabindex="-1"
+  aria-labelledby="araciSepeteEkleBaslik" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="araciSepeteEkleBaslik">Add to Cart</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form>
+        <div class="modal-body">
+          <div class="row ">
+            <div class="col-md-5 d-flex align-items-center">
+              <img [src]="getImagePath(currentCar.carImages[0].imagePath)" height="130" alt="..." style="object-fit: cover;">
+            </div>
+
+            <div class="col-md-7">
+              <div class="text-center" style="width: 16.5rem;">
+                <div class="card-body">
+                  <h3 class="card-title">{{currentCar.brandName}} {{currentCar.modelName}}</h3>
+                  <h5 class="card-subtitle mb-2 text-muted">Amount Payable</h5>
+                  <h4><strong>
+                      <div *ngIf="rentalPeriod && validateRentalDates===true && rentalConfirmation">
+                        <p *ngIf="rentalConfirmation.data===true" class="card-text text-success">
+                          {{currentCar.dailyPrice * rentalPeriod | currency:"":""}}$</p>
+                      </div>
+                    </strong></h4>
+
+                </div>
+              </div>
+            </div>
+          </div><br>
+
+          <div class="form-group row">
+            <label class="col-sm-4 col-form-label text-center"><strong>Lease Date: </strong></label>
+            <div class="col-sm-8"><input [(ngModel)]="rentDate"
+                (ngModelChange)="validateReservationDates(rentDate,returnDate)"
+                (ngModelChange)="checkIfAnyReservationsBetweenSelectedDates(currentCar.id, rentDate, returnDate)"
+                (ngModelChange)="calculateRentalPeriod()" name="rentnDate" onkeydown="return false" type="date"
+                [min]="getDateNow()" class="form-control"></div>
+          </div>
+          <div *ngIf="rentDate" class="form-group row">
+            <label class="col-sm-4 col-form-label text-center"><strong>Delivery Date: </strong></label>
+            <div class="col-sm-8"><input [(ngModel)]="returnDate"
+                (ngModelChange)="validateReservationDates(rentDate,returnDate)"
+                (ngModelChange)="checkIfAnyReservationsBetweenSelectedDates(currentCar.id, rentDate, returnDate)"
+                (ngModelChange)="calculateRentalPeriod()" name="returnDate" onkeydown="return false" type="date"
+                [min]="addDayToDate(convertStringToDate(rentDate),1)" class="form-control"></div>
+          </div>
+        </div>
+      </form>
+
+
+
+      <div *ngIf="rentalConfirmation && validateRentalDates===true">
+        <div
+          *ngIf="rentalConfirmation.data===false && (convertStringToDate(rentDate) > convertStringToDate(getDateNow()))">
+          <div *ngIf="rentalPeriod" class="alert alert-danger text-center" role="alert">
+            There is another Reservation for Selected Date
+          </div>
+        </div>
+        <div
+          *ngIf="rentalConfirmation.data===false && (convertStringToDate(rentDate) <= convertStringToDate(getDateNow()))">
+          <div *ngIf="rentalPeriod" class="alert alert-danger text-center" role="alert">
+            Vehicle has been Rented
+          </div>
+        </div>
+        <div *ngIf="rentalConfirmation.data===true">
+          <div *ngIf="rentalPeriod" class="alert alert-success text-center" role="alert">
+            <div>Vehicle is rented for <strong>{{rentalPeriod}}</strong>Day</div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="rentDate && returnDate && validateRentalDates!==true">
+        <div class="alert alert-danger text-center" role="alert">
+          <div>Delivery must be greater than Rental Date!</div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div *ngIf="rentalConfirmation && validateRentalDates===true">
+          <button *ngIf="rentalConfirmation.data==true"
+            (click)="addToCart(currentCar,convertStringToDate(rentDate),convertStringToDate(returnDate))" type="button"
+            class="btn btn-success" data-bs-dismiss="modal">Add to Cart</button>
+        </div>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+
+<div *ngIf="carDataLoaded == true" class="row">
+  <div class="card-body">
+    <div class="row">
+      <h1 class="text-center" style="text-transform: uppercase; font-weight: bold;">{{currentCar.brandName}}
+        {{currentCar.modelName}}</h1>
+      <div class="divider div-transparent div-arrow-down mb-2" style="--icon-color:black"></div>
+      <div id="CarImagesCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button *ngFor="let carImage of currentCar.carImages; let i = index" type="button"
+            data-bs-target="#CarImagesCarousel" attr.data-bs-slide-to="{{i}}" class="{{(i == 0) ? 'active' : ''}}"
+            attr.aria-label="Slide {{i}}"></button>
+        </div>
+        <div class="carousel-inner">
+          <div *ngFor="let carImage of currentCar.carImages; let i = index"
+            class="{{(i == 0) ? 'carousel-item active' : 'carousel-item' }} text-center">
+            <img [src]="getImagePath(carImage.imagePath)" height="650" alt="..." style="object-fit: cover;">
+          </div>
+        </div>
+        <div *ngIf="currentCar.carImages.length != 1">
+          <button class="carousel-control-prev" type="button" data-bs-target="#CarImagesCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#CarImagesCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="card-group text-center">
+        <div class="card" style="background-color: var(--secondThemeColor); color: var(--firstThemeColor);">
+          <div class="card-body">
+            <strong>BRAND</strong>
+            <div class="divider div-transparent div-arrow-down mb-2" style="--icon-color:white"></div>
+            <div style="color: white;">{{currentCar.brandName}}</div>
+          </div>
+        </div>
+        <div class="card" style="background-color: var(--secondThemeColor); color: var(--firstThemeColor);">
+          <div class="card-body">
+            <strong>MODEL</strong>
+            <div class="divider div-transparent div-arrow-down mb-2" style="--icon-color:white"></div>
+            <div style="color: white;">{{currentCar.modelName}}</div>
+          </div>
+        </div>
+        <div class="card" style="background-color: var(--secondThemeColor); color: var(--firstThemeColor);">
+          <div class="card-body">
+            <strong>COLOR</strong>
+            <div class="divider div-transparent div-arrow-down mb-2" style="--icon-color:white"></div>
+            <div style="color: white;">{{currentCar.colorName}}</div>
+          </div>
+        </div>
+        <div class="card" style="background-color: var(--secondThemeColor); color: var(--firstThemeColor);">
+          <div class="card-body">
+            <strong>MODEL YEAR</strong>
+            <div class="divider div-transparent div-arrow-down mb-2" style="--icon-color:white"></div>
+            <div style="color: white;">{{currentCar.modelYear}}</div>
+          </div>
+        </div>
+        <div class="card" style="background-color: var(--secondThemeColor); color: var(--firstThemeColor);">
+          <div class="card-body">
+            <strong>DESCRIPTION</strong>
+            <div class="divider div-transparent div-arrow-down mb-2" style="--icon-color:white"></div>
+            <div style="color: white;">{{currentCar.description}}</div>
+          </div>
+        </div>
+        <div class="card" style="background-color: var(--secondThemeColor); color: var(--firstThemeColor);">
+          <div class="card-body">
+            <strong>DAILY FEE</strong>
+            <div class="divider div-transparent div-arrow-down mb-2" style="--icon-color:white"></div>
+            <div style="color: white;">${{currentCar.dailyPrice | currency:"":""}}</div>
+          </div>
+        </div>
+        <div class="card" style="background-color: var(--secondThemeColor); color: var(--firstThemeColor);">
+          <div class="card-body">
+            <button class="btn"
+              style="background-color: var(--firstThemeColor); color: var(--secondThemeColor); font-weight: bold; height: 100%; width: 100%;"
+              role="button" data-bs-toggle="modal" data-bs-target="#araciSepeteEkle">Rent<br>
+              (${{currentCar.dailyPrice | currency:"":""}})</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Review -->
+
+<div class="container">
+  <div class="accordion" id="ratingsReviewsAccordion">
+    <!-- Ratings Section -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="ratingsHeading">
+        <button
+          class="accordion-button"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#ratingsCollapse"
+          aria-expanded="true"
+          aria-controls="ratingsCollapse"
+        >
+          Ratings
+        </button>
+      </h2>
+      <div
+        id="ratingsCollapse"
+        class="accordion-collapse collapse show"
+        aria-labelledby="ratingsHeading"
+        data-bs-parent="#ratingsReviewsAccordion"
+      >
+        <div class="accordion-body">
+          <!-- Heading for Average Rating -->
+          <h3>Average Rating</h3>
+          <p class="average-rating">
+            <span class="big-star" [ngClass]="{'filled': calculateAverageRating() >= 1}" >&#9733;</span>
+            <span class="big-star" [ngClass]="{'filled': calculateAverageRating() >= 2}" >&#9733;</span>
+            <span class="big-star" [ngClass]="{'filled': calculateAverageRating() >= 3}" >&#9733;</span>
+            <span class="big-star" [ngClass]="{'filled': calculateAverageRating() >= 4}" >&#9733;</span>
+            <span class="big-star" [ngClass]="{'filled': calculateAverageRating() >= 5}" >&#9733;</span>
+          </p>
+
+          <!-- Heading for Rating Distribution -->
+          <h3>Rating Distribution</h3>
+          <div class="rating-chart">
+            <div *ngFor="let count of calculateRatingDistribution(); let i = index" class="rating-bar">
+              <div class="bar">
+                <div class="fill" [style.width.%]="(count / reviews.length) * 100"></div>
+              </div>
+              <p>{{ i + 1 }} Star</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Reviews Section -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="reviewsHeading">
+        <button
+          class="accordion-button"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#reviewsCollapse"
+          aria-expanded="true"
+          aria-controls="reviewsCollapse"
+        >
+          Reviews
+        </button>
+      </h2>
+      <div
+        id="reviewsCollapse"
+        class="accordion-collapse collapse show"
+        aria-labelledby="reviewsHeading"
+        data-bs-parent="#ratingsReviewsAccordion"
+      >
+        <div class="accordion-body">
+
+          <!-- Display reviews here -->
+          <div *ngFor="let review of reviews" class="review">
+
+
+            <div class="review-section">
+                <div class="user-icon">
+                  <div class="initials"></div>
+                </div>
+
+              <div>
+              <p style="margin: 0px;" class="user-email">{{review.displayName}}</p>
+               <!-- Your rating display logic here -->
+               <p class="star-rating">
+                <span class="star" [ngClass]="{'filled': review.rating >= 1}" >&#9733;</span>
+                <span class="star" [ngClass]="{'filled': review.rating >= 2}" >&#9733;</span>
+                <span class="star" [ngClass]="{'filled': review.rating >= 3}" >&#9733;</span>
+                <span class="star" [ngClass]="{'filled': review.rating >= 4}" >&#9733;</span>
+                <span class="star" [ngClass]="{'filled': review.rating >= 5}" >&#9733;</span>
+              </p>
+              </div>
+            </div>
+
+
+
+            <p class="review-content"><b>{{ review.reviewDate | date:'yyyy-MM-dd' }}</b>:-) <span>{{ review.reviewContent }}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Review -->
+
+
+
+<div *ngIf="carDataLoaded == true" class="row mt-5">
+  <div class="row row-cols-1 row-cols-md-5 g-4" style="margin-top: -70px;">
+    <div *ngFor="let subCar of carsOfCurrentBrand" class="col">
+      <div class="card h-100" style="width: 15rem; background-color: var(--secondThemeColor);border-radius: 20px;">
+
+        <img [src]="getImagePath(subCar.carImages[0].imagePath)" routerLink="/car-details/{{subCar.id}}"
+          class="card-img-top mt-4" alt="image-not-found" style="object-fit: cover; width: 190px; margin:auto" />
+
+        <div class="card-body" style="color: white">
+
+          <h5 class="card-title text-center" style="color: var(--firstThemeColor);"><strong>{{subCar.brandName}}
+              {{subCar.modelName}}</strong></h5>
+          <div class="divider div-transparent div-arrow-down mb-4" style="--icon-color:white"></div>
+          <p class="text-center">Daily prices starts from..<strong style="color: var(--firstThemeColor);">${{subCar.dailyPrice |
+            currency:"":""}}</strong></p>
+
+          <div class="text-center">
+            <a routerLink="/car-details/{{subCar.id}}" class="btn"
+              style="background-color: var(--firstThemeColor); color: var(--secondThemeColor); font-weight: bold;">REVIEW</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- <div *ngFor="let subCar of carsOfCurrentBrand" class="card border border-light" style="width: 18rem;">
+    <div>
+      <img [src]="getImagePath(subCar.carImages[0].imagePath)" routerLink="/car-details/{{subCar.id}}" height="168"
+        class="card-img-top" alt="...">
+    </div>
+    <div class="card-body">
+      <h5 class="card-title text-center">{{subCar.brandName}} {{subCar.modelName}}</h5>
+      <h5 class="card-title text-center">{{subCar.dailyPrice | currency:"":""}}$</h5>
+      <div class="text-center"><a routerLink="/car-details/{{subCar.id}}" class="btn btn-primary text-center">İncele</a>
+      </div>
+    </div>
+  </div> -->
+</div>

@@ -1,0 +1,86 @@
+<div class="card-body">
+  <div class="row">
+
+    <div class="col-md-5">
+      <div class="container">
+        <div class="mt-3 p-3 bg-primary text-white rounded">
+            <h1>File Upload</h1>
+            <p>With API and File type and File Size Check</p>
+        </div>
+        <div class="row pt-3">
+
+          <input type="text" (change)="getName(name.value)" #name/>
+          <input type="file" (change)="getFile($event)"/>
+          <input type="button" value="UploadFile" (click)="uploadFile(file)"/>
+
+        </div>
+
+    </div>
+    </div>
+
+
+
+
+    <!-- Right Partition for Other Aspects -->
+    <div class="col-md-7">
+
+      <!-- Document Type Radio Buttons -->
+      <div class="row mt-3">
+        <div class="col-md-6">
+
+            <div class="document-section">
+              <label class="me-5" for="documentType">Document Type:</label>
+              <div *ngFor="let type of documentTypes" class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="documentType"
+                  [id]="type"
+                  [value]="type"
+                  [(ngModel)]="selectedDocumentType"
+                />
+                <label class="form-check-label" [for]="type">{{ type }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+       <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="document-section">
+              <label class="me-5" for="documentType">Insurance Type:</label>
+
+              <div *ngFor="let type of documentTypes" class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="documentType"
+                  [id]="type"
+                  [value]="type"
+                  [(ngModel)]="selectedDocumentType"
+                />
+                <label class="form-check-label" [for]="type">{{ type }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Document Declaration Checkbox -->
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="documentDeclaration">
+              <input type="checkbox" id="documentDeclaration" name="documentDeclaration">
+               I hereby specify that all documents are original.
+            </label>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+

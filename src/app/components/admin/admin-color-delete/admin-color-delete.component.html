@@ -1,0 +1,18 @@
+<div *ngIf="deletedColor" class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between">
+            <h5>{{deletedColor.name}} Delete Color</h5>
+        </div>
+
+    </div>
+    <div class="card-body">
+        <strong>{{deletedColor.id}}</strong> delete color id 
+        <strong>{{deletedColor.name}}</strong> Are you sure you want to Delete Color?
+        <div class="row mt-3">
+            <div class="d-flex justify-content-end">
+                <button (click)="delete(deletedColor)" type="button" class="btn btn-success me-2">Delete</button>
+                <button (click)="closeColorDeleteModal()" type="button" class="btn btn-danger">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

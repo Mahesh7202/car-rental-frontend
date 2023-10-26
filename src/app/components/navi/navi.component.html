@@ -1,0 +1,267 @@
+<nav
+  class="navbar navbar-expand-lg fixed-top navbar-dark"
+  style="background-color: #000"
+>
+  <div class="container-fluid">
+    <div class="row" style="width: 100%">
+      <div class="col-3" style="display: flex">
+        <h2>
+          <a class="logo" routerLink=""
+            ><span>Rental</span><span><span>Car</span></span></a
+          >
+        </h2>
+        <button
+          class="navbar-toggler mr-0"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
+            <li *ngIf="isLoggedIn | async" class="nav-item dropdown">
+              <div *ngIf="isAdmin">
+                <div *ngIf="isAdmin === true">
+                  <a
+                    class="nav-link active dropdown-toggle bg-danger rounded"
+                    id="managerDropdown"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    Manage
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li>
+                      <a class="dropdown-item" routerLink="/admin/brand/manager"
+                        >Manage Branch</a
+                      >
+                    </li>
+                    <li>
+                      <a class="dropdown-item" routerLink="/admin/color/manager"
+                        >Manage Color</a
+                      >
+                    </li>
+                    <li>
+                      <a class="dropdown-item" routerLink="/admin/car/manager"
+                        >Manage Car</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-4" style="display: flex">
+        <div class="input-group">
+          <div class="row">
+            <div class="col-10">
+              <input
+              type="text"
+              class="form-control rounded-start"
+              [(ngModel)]="searchQuery"
+              placeholder="Search..."
+              (keyup)="sendData($event)"
+            />
+            </div>
+            <div class="col-2">
+              <button
+              class="btn btn-outline-secondary rounded-end"
+              type="button"
+              (click)="routeTo()"
+            >
+              search
+            </button>
+            </div>
+          </div>
+          <div class="row search-result">
+            <section class="search-results">
+              <ng-container *ngIf="filteredBrands.length > 0;">
+                <ng-template ngFor let-brand [ngForOf]="filteredBrands" let-i="index">
+                  <p style="margin: 5px; cursor: pointer;"
+                  (click)="selectSuggestedText(brand.name)">{{ brand.name }}</p>
+                </ng-template>
+              </ng-container>
+
+            </section>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-5" style="display: flex; justify-content: flex-end">
+        <div class="me-3">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <div *ngIf="isAdmin === true" class="me-3">
+              <button
+                routerLink="/admin/bookings"
+                type="button"
+                class="btn btn-success float-end px-3"
+              >
+                Booked List
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-pencil-square"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div *ngIf="!isAdmin" class="me-3">
+              <button
+                routerLink="/rents"
+                type="button"
+                class="btn btn-success float-end px-3"
+              >
+                Booked List
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-pencil-square"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div class="me-3">
+              <app-cart-summary></app-cart-summary>
+            </div>
+
+            <div *ngIf="!(isLoggedIn | async)">
+              <li class="nav-item">
+                <div class="btn-group">
+                  <button
+                    class="btn btn-warning rounded"
+                    style="
+                      width: 150px;
+                      background-color: var(--firstThemeColor);
+                      border-color: var(--firstThemeColor);
+                    "
+                    type="button"
+                    id="dropdownMenu2"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <div class="row">
+                      <div class="col-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          fill="var(--secondThemeColor)"
+                          class="bi bi-person-fill"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
+                          />
+                        </svg>
+                      </div>
+                      <div class="col-10">
+                        <span>
+                          <span
+                            class="loginButtonLoginText"
+                            style="color: var(--secondThemeColor)"
+                            >Login</span
+                          >
+                          <span
+                            class="loginButtonRegisterText"
+                            style="color: var(--secondThemeColor)"
+                            >or Sign Up</span
+                          >
+                        </span>
+                      </div>
+                    </div>
+                  </button>
+                  <ul
+                    class="dropdown-menu shadow text-center"
+                    aria-labelledby="dropdownMenu2"
+                  >
+                    <li>
+                      <a class="dropdown-item" routerLink="/account/login"
+                        >Login</a
+                      >
+                    </li>
+                    <li>
+                      <a class="dropdown-item" routerLink="/account/register"
+                        >SignUp</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            </div>
+
+            <div *ngIf="isLoggedIn | async" class="dropdown text-end">
+              <li class="nav-item d-flex align-items-center">
+                <!--Profile-->
+                <a
+                  class="d-block link-dark text-decoration-none dropdown-toggle mt-1"
+                  id="dropdownUser1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    fill="white"
+                    class="bi bi-person-circle"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                    <path
+                      fill-rule="evenodd"
+                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                    />
+                  </svg>
+                  <span class="text-light ms-2">{{ currentUser.name }}</span>
+                </a>
+                <ul
+                  class="dropdown-menu dropdown-menu-end shadow text-small"
+                  aria-labelledby="dropdownUser1"
+                >
+                  <li>
+                    <a routerLink="/profile" class="dropdown-item">Profile</a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
+                  <li>
+                    <a (click)="logOut()" class="dropdown-item">LogOut</a>
+                  </li>
+                </ul>
+              </li>
+            </div>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

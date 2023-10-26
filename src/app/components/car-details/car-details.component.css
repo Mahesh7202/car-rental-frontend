@@ -1,0 +1,106 @@
+
+
+/* Accordion styles */
+.accordion-item {
+  background-color: #f7f7f7;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+/* Accordion header styles */
+.accordion-button {
+  background-color: #007bff;
+  color: white;
+}
+
+
+
+.big-star {
+  font-size: 50px;
+}
+
+/* Rating chart styles */
+.rating-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.rating-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bar {
+  width: 200px;
+  height: 20px;
+  background-color: #f0f0f0;
+  position: relative;
+  border-radius: 5px;
+}
+
+.fill {
+  height: 100%;
+  background-color: #007bff; /* Blue color for filled bars */
+  border-radius: 5px;
+}
+
+.rating-bar p {
+  margin: 0;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Individual review styles */
+.review {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.star-rating {
+  font-size: 24px;
+}
+
+/* Star Rating Styles */
+.star-rating {
+  font-size: 0; /* Remove text inside the span */
+}
+
+.star {
+  font-size: 24px; /* Adjust the size as needed */
+  cursor: pointer;
+}
+
+.filled {
+  color: #f8ce0b; /* Change the fill color for filled stars */
+}
+
+.user-icon {
+  width: 50px;
+  height: 50px;
+  background-color: #007bff; /* Change this to your desired background color */
+  color: #fff; /* Text color for initials */
+  border-radius: 50%; /* Make it round */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 5px;
+}
+
+.initials {
+  font-size: 20px;
+}
+
+.review-section{
+  display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+}

@@ -1,0 +1,5 @@
+.custom-button {
+  border-radius: 5px; /* Rounded corners */
+  background-color: rgb(88, 88, 244); /* Transparent background */
+  padding: 5px 10px; /* Adjust padding as needed */
+}
